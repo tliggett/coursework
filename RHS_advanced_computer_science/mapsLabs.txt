@@ -1,0 +1,36 @@
+Maps Labs
+
+I have done maps labs in java and javascript, and here is what I have learned:
+
+In Java, Maps are divided into TreeMaps and HashMaps. TreeMaps sort the objects, HashMaps don't. Processing already has HashMaps
+in its ide, so no imports are necessary for this structure. However, if one wants to use a TreeMap they must import java.util, which
+will compromise their project and it can no longer be put online.
+
+In JavaScript, one has to develop their own data structures. But the array inside of JavaScript (at least in p5) is not like an array or
+arraylist as previously thought, but rather just like a map. 
+
+myArray = [];
+myArray[1] = "taco";
+myArray["taco"] = 1;
+
+Since all variables are var, they can be used as either the key or value in the array. This means that a javascrip array has the
+flexibility to become anything! By making a function, you can create classes with these arrays. The most popular form for a map-like
+structure is a Dictionary, which I have used in my labs. But a Dictionary isn't really anything, as you can just change it to be
+whatever you want it to be.
+
+Regular Maps Labs:
+
+#1 StrawberrySlayerAlpha
+#2 Histogram (Java)
+#3 maps3
+#4 maps4
+
+Challenge Maps Labs
+
+#1 Dictionary1 - you can find the code for this inside my histogram repository: https://github.com/tliggett/histogram
+#2 Histogram (JS) - also at https://github.com/tliggett/histogram, but a live demo at https://tliggett.github.io/histogram
+#3 Quotes - found at https://github.com/tliggett/quotes, but a live demo at https://tliggett.github.io/quotes
+
+Happy Labbing
+
+TJ
