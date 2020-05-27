@@ -1,0 +1,159 @@
+  # Problem 1: Text Mining
+    sbaFile <- "AChristmasCarol.txt"   
+    sba <- readLines(sbaFile)
+    # Load relevant libraries
+    library(tm)
+    # using the tm package
+    # Created a word corpus
+    # --------------------
+    words.vec <- VectorSource(sba)
+    words.corpus <- Corpus(words.vec)
+    words.corpus <- tm_map(words.corpus, content_transformer(tolower))
+    words.corpus <- tm_map(words.corpus, removePunctuation)
+    words.corpus <- tm_map(words.corpus, removeNumbers)
+    words.corpus <- tm_map(words.corpus, removeWords, c(stopwords("english")))
+    tdm <- TermDocumentMatrix(words.corpus)
+    m <- as.matrix(tdm)
+    wordCounts <- rowSums(m)
+    wordCounts <- sort(wordCounts, decreasing=TRUE)
+    head(wordCounts, 25)
+  
+  
+  # Problem 2
+  quakeData <- read.csv("quakeFull.csv")
+  summary(quakeData)
+  str(quakeData)  
+  
+  quakeData$type <- as.factor(quakeData$type)  
+  boxplot(mag~type,data=quakeData, main="Magnitude by Event Type",
+          xlab="Event Type", ylab="Magnitude")
+        
+  plot(quakeData$sig, quakeData$mag, main="Magnitude vs. Significance",
+   xlab="Significance", ylab="Magnitude", pch=19)
+
+  plot(quakeData$type, quakeData$lat, main="Type of Quake vs. Latitude",
+       xlab="Type of Quake", ylab="Latitude", pch=19)
+  
+    anovatest <- aov(quakeData$lat ~ quakeData$type)
+    summary(anovatest)      
+  
+    
+    mapset <- subset(quakeData, lat >= 25 & lat <= 50 & long <= -65 & long >= -125)
+    #Set quake mags
+    mapset[which(mapset$mag < 1),]$mag <- 1
+        #add dummy column
+    mapset$state <- "?"
+    
+    library(ggmap)
+    us <- map_data("state")
+    dummyDF <- data.frame(state.name, stringsAsFactors = FALSE)
+    dummyDF$state <- tolower(dummyDF$state.name)
+    map.simple <- ggplot(dummyDF, aes(map_id = state))
+    map.simple <- map.simple + geom_map(map = us, fill = "white", color="black")
+    map.simple <- map.simple + expand_limits(x = us$long, y = us$lat)
+    map.simple <- map.simple + coord_map() + ggtitle("Quake Data Map")
+    map.simple <- map.simple + geom_point(data=mapset, aes(x=long, y=lat), size = mapset$mag, color = "darkred", alpha = 0.5)
+    map.simple
+        
+    
+    
+    # Problem 3
+    # Step 1: Load the data
+    cars <- data.frame(read.csv("auto-mpg.csv"))
+    cars <- cars[, !(colnames(cars) %in% c("car.name"))]
+    cars$horsepower <- as.numeric(cars$horsepower)
+    str(cars)
+    # find which columns in the dataframe contain NAs.      
+    colnames(cars)[colSums(is.na(cars)) > 0]
+    # none had NAs
+        
+    cars$origin <- as.factor(cars$origin)
+    library(ggplot2) 
+    hist(cars$mpg)
+    plot(cars$origin, cars$mpg, main="Origin of cars vs MPG",
+         xlab="Origin", ylab="Miles per Gallon", pch=19)
+    
+    ggplot(cars, aes(x=model.year, y=mpg, color=origin))+
+      geom_point() + geom_smooth(method=lm, se=FALSE, fullrange=TRUE) +
+      labs(title="Miles per gallon vs. Model year by country of origin",
+           x="Model Year", y = "MPG")+
+      theme_classic()  
+    
+    
+    
+    
+    
+    randIndex <- sample(1:dim(cars)[1])
+    
+    # In order to split data, create a 60% cutpoint and round the number
+    cutpoint2_3 <- floor(3*dim(cars)[1]/5)
+    
+    # check the 60% cutpoint
+    cutpoint2_3
+    
+    # create train data set, which contains the first 2/3 of overall data
+    trainData <- cars[randIndex[1:cutpoint2_3],]
+    
+    # create test data, which contains the left 1/3 of the overall data
+    testData <- cars[randIndex[(cutpoint2_3+1):dim(cars)[1]],]
+    
+    # check train data set
+    head(trainData)
+            
+    # check test data set
+    dim(testData)
+    
+    
+    # lm
+    # create a linear model
+    lm <- lm(formula = mpg~.,# use all the other variables to predict "mpg"
+             data=trainData # use "trainData" in this analysis
+    )
+    summary(lm)
+    
+    # horsepower + cylinders + displacement + acceleration + weight + model.year + origin
+      lm <- lm(formula = mpg~ cylinders + displacement + weight + model.year + origin,# use all the other variables to predict "mpg"
+               data=trainData # use "trainData" in this analysis
+      )
+    
+      # Test the model
+    predLm <- predict(lm,  # use model "svm_e" to predict 
+                      testData # use testData to do the test
+    )
+    
+    compTable3 <- data.frame(testData[,1], predLm)
+    
+    # change the column names to "test" and "Pred"
+    colnames(compTable3) <- c("test","Pred")
+    
+    # comput the Root Mean Squared Error
+    error_lm <- sqrt(mean((compTable3$test-compTable3$Pred)^2))
+    summary(lm)
+    error_lm
+    
+    
+    
+    
+    
+    
+    
+    
+    # create a dataframe that contains the exact "mpg" value and the predicted "mpg" value
+    compTable3 <- data.frame(testData[,1], predLm)
+    
+    # change the column names to "test" and "Pred"
+    colnames(compTable3) <- c("test","Pred")
+    
+    # comput the Root Mean Squared Error
+    error_lm <- sqrt(mean((compTable2$test-compTable2$Pred)^2))
+    error_lm
+    # compute absolute error for each case
+    compTable3$error <- abs(compTable3$test-compTable3$Pred)
+    
+    # create a new dataframe contains error, cylinders and weight
+    lmPlot <- data.frame(compTable3$error,testData$cylinders,testData$weight)
+    colnames(lmPlot) <- c("error","cylinders","weight")
+    
+    # polt result using ggplot
+    ggplot(lmPlot,aes(x=cylinders,y=weight)) + geom_point(aes(size=error,color=error))
+      

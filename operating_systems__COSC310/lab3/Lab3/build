@@ -1,0 +1,4 @@
+gcc -o ftest_seq ftest_seq.c
+gcc -o ftest_fork ftest_fork.c
+gcc -o ftest_fork_shm ftest_fork_shm.c
+

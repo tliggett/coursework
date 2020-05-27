@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1572029489594.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3793615859",
+    "id" : "15D5BB02",
+    "lastKnownWriteTime" : 1572027870,
+    "last_content_update" : 1572027870,
+    "path" : "~/workspace/coursework/cs212/hw9/elonmusk_tweets.csv",
+    "project_path" : "elonmusk_tweets.csv",
+    "properties" : {
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

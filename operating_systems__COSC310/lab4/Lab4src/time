@@ -1,0 +1,10 @@
+{ time ./num3fork 1 ; time ./num3fork 1 ; time ./num3fork 1 ;
+time ./num3fork 2 ; time ./num3fork 2 ; time ./num3fork 2 ;
+time ./num3fork 3 ; time ./num3fork 3 ; time ./num3fork 3 ;
+time ./num3fork 4 ; time ./num3fork 4 ; time ./num3fork 4 ;
+time ./num3fork 5 ; time ./num3fork 5 ; time ./num3fork 5 ;
+time ./num3fork 6 ; time ./num3fork 6 ; time ./num3fork 6 ;
+time ./num3fork 7 ; time ./num3fork 7 ; time ./num3fork 7 ;
+time ./num3fork 8 ; time ./num3fork 8 ; time ./num3fork 8 ;
+time ./num3fork 9 ; time ./num3fork 9 ; time ./num3fork 9 ;   
+time ./num3fork 10 ; time ./num3fork 10 ; time ./num3fork 10 ; } 2> num2fork.txt

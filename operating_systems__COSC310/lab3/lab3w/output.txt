@@ -1,0 +1,58 @@
+TJ Liggett
+2 27 2019
+COSC 310 Lab 3
+
+Timing:
+
+Sequencial: real    0m0.013s
+	  user    0m0.000s
+	  sys     0m0.000s
+
+Two Fork:   real    0m0.024s
+	  user    0m0.000s
+	  sys     0m0.016s
+	  
+Four Fork:   real    0m0.033s
+	  user    0m0.000s
+	  sys     0m0.000s
+
+
+Outputs:
+
+Sequencial:
+
+Processing Summary:
+   Total sum: 2475000
+   Total average: 49
+
+Two Fork: 
+
+   Process ID = 0 (inside first forked() process)
+   First process sum:   1237500
+Process ID of first process  = 33
+   Process ID = 0 (inside second forked() process)
+Process ID of second process = 34
+   Second process sum:  1237500
+Processing Summary:
+   Total sum: 2475000
+   Total average: 49
+
+
+Four Fork: 
+
+   Process ID = 0 (inside first forked() process)
+   First process sum:   618750
+   Process ID = 0 (inside second forked() process)
+   Second process sum:  618750
+   Process ID = 0 (inside third forked() process)
+   Third process sum:  618750
+Process ID of first process  = 64
+Process ID of second process = 65
+   Process ID = 0 (inside fourth forked() process)
+Process ID of third process  = 66
+   Fourth process sum:  618750
+Process ID of fourth process = 67
+Processing Summary:
+   Total sum: 2475000
+   Total average: 49
+

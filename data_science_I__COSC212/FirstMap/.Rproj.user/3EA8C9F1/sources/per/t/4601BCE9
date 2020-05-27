@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1574694416807.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2427724911",
+    "id" : "4601BCE9",
+    "lastKnownWriteTime" : 1574694755,
+    "last_content_update" : 1574694755150,
+    "path" : "~/workspace/coursework/cs212/FirstMap/app.R",
+    "project_path" : "app.R",
+    "properties" : {
+        "cursorPosition" : "24,4",
+        "scrollLine" : "10",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1574104806705.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2063573410",
+    "id" : "26BF1800",
+    "lastKnownWriteTime" : 1574124994,
+    "last_content_update" : 1574124994633,
+    "path" : "~/workspace/coursework/cs212/hw12/Hw12starter.R",
+    "project_path" : "Hw12starter.R",
+    "properties" : {
+        "cursorPosition" : "304,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

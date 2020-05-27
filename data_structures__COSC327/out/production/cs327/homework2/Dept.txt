@@ -1,0 +1,12 @@
+Educ
+40
+DS
+20
+Math
+50
+CS
+40
+Psyc
+45
+Soci
+15

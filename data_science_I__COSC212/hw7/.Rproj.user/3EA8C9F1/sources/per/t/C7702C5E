@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571376849268.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "C7702C5E",
+    "lastKnownWriteTime" : 176093659137,
+    "last_content_update" : 1571376849268,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "id" : "9902e74cd9f441deb1d9bbd219f09e93",
+        "name" : "locs",
+        "title" : "locs"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "object_explorer"
+}

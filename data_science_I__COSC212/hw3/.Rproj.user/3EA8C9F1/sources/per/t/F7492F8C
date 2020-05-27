@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1568226230260.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2516738330",
+    "id" : "F7492F8C",
+    "lastKnownWriteTime" : 1568676717,
+    "last_content_update" : 1568676717706,
+    "path" : "~/workspace/coursework/cs212/hw3/DA212_HW3_tjLiggett.R",
+    "project_path" : "DA212_HW3_tjLiggett.R",
+    "properties" : {
+        "cursorPosition" : "59,0",
+        "scrollLine" : "41",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

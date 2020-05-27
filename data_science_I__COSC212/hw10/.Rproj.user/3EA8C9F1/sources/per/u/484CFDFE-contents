@@ -1,0 +1,10 @@
+mtcars
+  model1 <- lm(formula=mpg ~ wt, data=mtcars) 
+model2 <- lm(formula=mpg ~ gear, data=mtcars)
+
+# Test disp .7183 vs .4409, am .3598, carb
+summary(lm(formula=mpg ~ carb, data=mtcars))
+  summary(lm(formula= mpg ~ wt + hp + disp + cyl, data=mtcars))
+  summary(model1)
+summary(model2)  
+    

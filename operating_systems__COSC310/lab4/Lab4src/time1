@@ -1,0 +1,10 @@
+{ time ./num3omp 1 ; time ./num3omp 1 ; time ./num3omp 1 ;
+time ./num3omp 2 ; time ./num3omp 2 ; time ./num3omp 2 ;
+time ./num3omp 3 ; time ./num3omp 3 ; time ./num3omp 3 ;
+time ./num3omp 4 ; time ./num3omp 4 ; time ./num3omp 4 ;
+time ./num3omp 5 ; time ./num3omp 5 ; time ./num3omp 5 ;
+time ./num3omp 6 ; time ./num3omp 6 ; time ./num3omp 6 ;
+time ./num3omp 7 ; time ./num3omp 7 ; time ./num3omp 7 ;
+time ./num3omp 8 ; time ./num3omp 8 ; time ./num3omp 8 ;
+time ./num3omp 9 ; time ./num3omp 9 ; time ./num3omp 9 ;
+time ./num3omp 10 ; time ./num3omp 10 ; time ./num3omp 10 ; } 2> num3omp.txt

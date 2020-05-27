@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1576023034044.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "353A6B21",
+    "lastKnownWriteTime" : 1574466182,
+    "last_content_update" : 1576032148529,
+    "path" : "~/workspace/coursework/cs212/hw12/liggettTJ_DS212Hw12.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "125,0",
+        "scrollLine" : "115"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

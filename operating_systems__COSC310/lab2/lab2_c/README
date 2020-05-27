@@ -1,0 +1,12 @@
+We will go over the code examples that are contained in this directory in class.   
+They range from simple "ditty" programs to full-featured commandline applications.
+
+CTut:  		Two intro ditties to get you used to the language
+fixedpt:	A simple routine that does math with fixed point integers
+sizeof:		A simple routine to show the size in bytes of built-in types
+cornfit:	Fits corners of two coordinates systems and computes a
+		transformation between the two spaces using least squares
+helloThreads:	A hello world program in multiple threads (uses openmp)
+
+Assignment:   	See Google Classroom for Lab2 Assignment...
+

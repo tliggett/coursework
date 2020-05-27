@@ -1,0 +1,5 @@
+John Johnson    BA
+Paul Paulson    BS
+Peter Peterson  BA
+Carl Carlson    BS
+Jenny Jennison  BA

@@ -1,0 +1,40 @@
+# -------- Chapter 17: Data Mining --------
+#
+#install.packages("arules")
+library("arules")
+
+data(Groceries)
+summary(Groceries)
+
+itemFrequencyPlot(Groceries,support=0.1)
+itemFrequencyPlot(Groceries,support=0.05,cex.names=0.5)
+
+data(AdultUCI)
+str(AdultUCI)
+AdultUCI.t <- AdultUCI
+AdultUCI.t$age <- as.factor(AdultUCI.t$age)
+AdultUCI.t$fnlwgt <- as.factor(AdultUCI.t$fnlwgt)
+AdultUCI.t$'education-num' <- as.factor(AdultUCI.t$'education-num')
+AdultUCI.t$'capital-gain' <- as.factor(AdultUCI.t$'capital-gain')
+AdultUCI.t$'capital-loss' <- as.factor(AdultUCI.t$'capital-loss')
+AdultUCI.t$'hours-per-week' <- as.factor(AdultUCI.t$'hours-per-week')
+
+AdultUCI.trans <- as(AdultUCI.t, "transactions")
+
+itemFrequencyPlot(AdultUCI.trans,support=0.2, cex.names=1.1)
+
+apriori(Groceries,parameter=list(support=0.005, confidence=0.5))
+
+ruleset <- apriori(Groceries,parameter=list(support=0.01,confidence=0.5))
+summary(ruleset)
+inspect(ruleset)
+
+#install.packages("arulesViz")
+library(arulesViz)
+
+ruleset <- apriori(Groceries, parameter=list(support=0.005,confidence=0.35))
+plot(ruleset)
+
+goodrules <- ruleset[quality(ruleset)$lift > 3.5]
+inspect(goodrules)
+

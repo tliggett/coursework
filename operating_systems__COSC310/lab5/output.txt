@@ -1,0 +1,120 @@
+COSC 310 Lab 5 by TJ Liggett. For help input ?
+tjlab5> ?
+Commands:
+   q            Quit the program
+   ?            Print this help screen
+   on           Turns Verbose Mode On
+   off          Turns Verbose Mode Off
+   dump         Dumps the current Page Table
+   textbook     Sets up pages as in Fig 3-9 in text
+   1729         (Or any number -- decode this address)
+tjlab5> on
+   Verbose Mode ON
+tjlab5> 1729
+Address:  1729 offset:  1729 blkNum:  0 PageTableLoc:  0
+   1729 --> 1729
+tjlab5> off
+   Verbose Mode OFF
+tjlab5> 1729
+   1729 --> 1729
+tjlab5> on
+   Verbose Mode ON
+tjlab5> dump
+     Virtual-Address   Physical-Address
+        Index  MapsTo   Index  RefCnt
+          15   8
+          14   8
+          13   8
+          12   8
+          11   8
+          10   8
+           9   8
+           8   8
+           7   7           7   0
+           6   6           6   0
+           5   5           5   0
+           4   4           4   0
+           3   3           3   0
+           2   2           2   0
+           1   1           1   0
+           0   0           0   2
+     Number of Page-Faults: 0
+tjlab5> 65530
+Address:  65530 offset:  4090 blkNum:  15 PageTableLoc:  8
+PageFrame 1 had reference count of 0. Evicted from Page Table
+Virtual page table at location 1 set to 8 (unmapped)
+After-Trap -- Address:  65530 offset:  4090 blkNum:  15 PageTableLoc: 1
+   65530 --> 8186
+tjlab5> dump
+     Virtual-Address   Physical-Address
+        Index  MapsTo   Index  RefCnt
+          15   1
+          14   8
+          13   8
+          12   8
+          11   8
+          10   8
+           9   8
+           8   8
+           7   7           7   0
+           6   6           6   0
+           5   5           5   0
+           4   4           4   0
+           3   3           3   0
+           2   2           2   0
+           1   8           1   1
+           0   0           0   2
+     Number of Page-Faults: 1
+tjlab5> textbook
+Set up pages as in Fig 3-9 in text
+NOTE: Page-Fault count was reset
+tjlab5> dump
+     Virtual-Address   Physical-Address
+        Index  MapsTo   Index  RefCnt
+          15   8
+          14   8
+          13   8
+          12   8
+          11   7
+          10   8
+           9   5
+           8   8
+           7   8           7   0
+           6   8           6   0
+           5   3           5   0
+           4   4           4   0
+           3   0           3   0
+           2   6           2   0
+           1   1           1   0
+           0   2           0   0
+     Number of Page-Faults: 0
+tjlab5> 4090
+Address:  4090 offset:  4090 blkNum:  0 PageTableLoc:  2
+   4090 --> 12282
+tjlab5> 65530
+Address:  65530 offset:  4090 blkNum:  15 PageTableLoc:  8
+PageFrame 0 had reference count of 0. Evicted from Page Table
+Virtual page table at location 3 set to 8 (unmapped)
+After-Trap -- Address:  65530 offset:  4090 blkNum:  15 PageTableLoc: 0
+   65530 --> 4090
+tjlab5> dump
+     Virtual-Address   Physical-Address
+        Index  MapsTo   Index  RefCnt
+          15   0
+          14   8
+          13   8
+          12   8
+          11   7
+          10   8
+           9   5
+           8   8
+           7   8           7   0
+           6   8           6   0
+           5   3           5   0
+           4   4           4   0
+           3   8           3   0
+           2   6           2   1
+           1   1           1   0
+           0   2           0   1
+     Number of Page-Faults: 1
+tjlab5> q

@@ -1,0 +1,6 @@
+Enter length of arrays (arrays same length): 
+Enter 5 numbers separated by whitespace for array x: 
+Enter 5 numbers separated by whitespace for array y: 
+Array x: [1, 2, 3, 4, 5]
+Array y: [6, 7, 8, 9, 0]
+Array x + y: [7, 9, 11, 13, 5]

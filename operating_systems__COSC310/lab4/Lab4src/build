@@ -1,0 +1,4 @@
+gcc -o num3fork num3.c -lm
+gcc -fopenmp -o num3omp num3omp.c -lm
+gcc -pthread -o num3pthread num3pthread.c -lm -lpthread
+

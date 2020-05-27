@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571076788245.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2638833493",
+    "id" : "89E04E06",
+    "lastKnownWriteTime" : 1570476418,
+    "last_content_update" : 1570476418,
+    "path" : "~/workspace/coursework/cs212/act5/veryQuickSQLintro.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "43,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

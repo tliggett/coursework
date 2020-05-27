@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571407349961.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "3B6D3D39",
+    "lastKnownWriteTime" : 94272705642928,
+    "last_content_update" : 1571407349961,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "42FD600B",
+        "caption" : "dummyDF",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=dummyDF&cache_key=42FD600B",
+        "displayedObservations" : 50,
+        "environment" : "",
+        "expression" : "dummyDF",
+        "object" : "dummyDF",
+        "preview" : 0,
+        "totalObservations" : 50,
+        "variables" : 2
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

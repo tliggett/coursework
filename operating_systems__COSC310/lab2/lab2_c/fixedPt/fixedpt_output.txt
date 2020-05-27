@@ -1,0 +1,20 @@
+$ ./fixedpt 5 2
+
+a = 5.000000, b= 2.000000
+
+Performing Q8 Fixed-Point
+   Variable size is 4 bytes
+   Temp Variable size is 8 bytes
+
+Float calcs:
+   Multiplication:  5.000000 * 2.000000 = 10.000000
+   Division:        5.000000 / 2.000000 = 2.500000
+   Addition:        5.000000 + 2.000000 = 7.000000
+   Subtraction:     5.000000 - 2.000000 = 3.000000
+
+Fixed-Pt (scaled integer:  Factor = 256 -- 8 bits) calcs:
+   Multiplication:  1280 * 512 = 655360 -> 2560 (rescaled) (10.000000)
+   Division:        1280 -> 327680 (rescaled) / 512 = 640 (2.500000)
+   Addition:        1280 + 512 = 1792 (7.000000)
+   Subtraction:     1280 - 512 = 768 (3.000000)
+

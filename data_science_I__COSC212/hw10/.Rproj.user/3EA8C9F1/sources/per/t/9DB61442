@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1572493031636.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1098314549",
+    "id" : "9DB61442",
+    "lastKnownWriteTime" : 1575511342,
+    "last_content_update" : 1575511342073,
+    "path" : "~/workspace/coursework/cs212/hw10/Chapter16code.R",
+    "project_path" : "Chapter16code.R",
+    "properties" : {
+        "cursorPosition" : "18,4",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

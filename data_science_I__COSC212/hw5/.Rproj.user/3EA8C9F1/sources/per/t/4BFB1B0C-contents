@@ -1,0 +1,32 @@
+
+expected <- function(x, px){
+  sum <- 0
+  for(i in 1:length(x)){
+    sum <- sum + (x[i] * px[i])
+  }
+  return(sum)
+}
+
+expectedsq <- function(x, px){
+  sum <- 0
+  for(i in 1:length(x)){
+    sum <- sum + (x[i]* x[i] * px[i])
+  }
+  return(sum)
+}
+
+variance <- function(x, px, ex){
+  sum <- 0
+  for(i in 1:length(x)){
+    sum <- sum + ((x[i] - ex) * (x[i] - ex) * px[i])
+  }
+  return(sum)
+}
+
+
+x <- c(1,2,4,8,16)
+px <- c(0.05,.1,.35,.45,.05)
+  
+expected(x, px)
+variance(x, px, expected(x,px))
+

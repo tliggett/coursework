@@ -1,0 +1,6 @@
+Enter length of arrays (arrays same length): 
+Enter 4 numbers separated by whitespace for array x: 
+Enter 4 numbers separated by whitespace for array y: 
+Array x: [1, 2, 3, 4]
+Array y: [1, 2, 3, 4]
+Array x + y: [2, 4, 6, 8]

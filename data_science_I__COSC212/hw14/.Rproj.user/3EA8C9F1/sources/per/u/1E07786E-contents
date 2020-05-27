@@ -1,0 +1,39 @@
+  library(RCurl)
+  library(RJSONIO)
+  library(jsonlite)
+  
+  url.LastHr <- "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
+  url.LastDay <- "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson"
+  url.lastMn <- "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson"
+  url.lastWk <- "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson"
+  url <- url.lastMn
+  
+  
+  quakeData <- jsonlite:: fromJSON(url, flatten = TRUE)
+  size <- dim(quakeData$features)[1]
+  quakeRecord = data.frame()
+  for (i in rep(1:size)) {
+    tempCoords <- quakeData$features$geometry.coordinates[[i]]
+    record <- data.frame(tempCoords [2] , tempCoords[1], tempCoords[3], quakeData$features$properties.mag[i])
+    quakeRecord <- rbind(quakeRecord, record)
+    print(record) }
+  colnames(quakeRecord) <- c("lat", "long", "depth", "mag")
+  print(size)
+  print(quakeRecord)
+  
+  
+  setUrl <- function(set){
+    if(set == "Past Hour")
+    {
+      return(url.LastHr) 
+    }
+    if(set == "Past Day")
+    {
+      return(url.LastDay)
+    }
+    if(set == "Past Week")
+    {
+      return(url.lastWk)
+    }
+    return(url.lastMn)
+  }

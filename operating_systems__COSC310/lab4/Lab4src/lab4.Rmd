@@ -1,0 +1,187 @@
+---
+title: "CS 310 Lab 4"
+author: "TJ Liggett"
+date: "March 3, 2019"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+setwd("C:/Users/trevo/workspace/cs310/lab4/lab4src")
+Thread_Data = read.csv("master.csv")
+```
+
+
+
+###Summary:
+
+####Tests were made using my Dell Latitude 7000 series laptop. This laptop has an Intel(R) Core(TM) i7-6600U CPU @ 2.60GHz. The CPU has 2 cores with 4 logical processors.
+####Comparing the pthread, fork, and open mp programs overall, all had very similar real time averages. The biggest difference came between 1 and 2 processes as all programs nearly halved their runtimes by adding the second process. A slight decline in times appears between 2 and 3 processes, and after that the times seem to level out, with a miniscule increase appearing as more and more processes are added. As the laptop tested has 2 cores, it makes sense that there is little significant speed increase by adding more processes. If I was writing threaded software for this computer, I would probably cap out at 3 processes. This would probably be the most time efficient without too much extra going on. 
+####While real and user times were rather consistent between the different programs, system time increased significantly with added processes for the fork method, compared to consistent system times for open mp and pthread. When observing the fork method, the CPU displays a separate process for each fork. This is different from open mp and pthread which show one process with multiple threads. This could explain the difference in system times between the methods. 
+
+
+
+###Real Time Graphs: Averages Compared, then each of the individual graphs
+```{r}
+#Averages Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$fork.real.avg, colour = "fork")) + 
+  geom_point(aes(y = Thread_Data$fork.real.avg, colour = "fork")) +
+  geom_line(aes(y = Thread_Data$omp.real.avg, colour = "omp")) +
+  geom_point(aes(y = Thread_Data$omp.real.avg, colour = "omp")) +
+  geom_line(aes(y = Thread_Data$pthread.real.avg, colour = "pthread")) + 
+  geom_point(aes(y = Thread_Data$pthread.real.avg, colour = "pthread")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(100,188)) +
+  theme_bw() + labs(title = "Real Time Averages")
+
+#Fork Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$fork.real.1, colour = "trial 1")) + 
+  geom_point(aes(y = Thread_Data$fork.real.1, colour = "trial 1")) + 
+  geom_line(aes(y = Thread_Data$fork.real.2, colour = "trial 2")) +
+  geom_point(aes(y = Thread_Data$fork.real.2, colour = "trial 2")) + 
+  geom_line(aes(y = Thread_Data$fork.real.3, colour = "trial 3")) + 
+  geom_point(aes(y = Thread_Data$fork.real.3, colour = "trial 3")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(100,185)) +
+  theme_bw() + labs(title = "fork() Real Time Trials 1-3")
+
+#OMP Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$omp.real.1, colour = "trial 1")) + 
+  geom_point(aes(y = Thread_Data$omp.real.1, colour = "trial 1")) + 
+  geom_line(aes(y = Thread_Data$omp.real.2, colour = "trial 2")) +
+  geom_point(aes(y = Thread_Data$omp.real.2, colour = "trial 2")) + 
+  geom_line(aes(y = Thread_Data$omp.real.3, colour = "trial 3")) + 
+  geom_point(aes(y = Thread_Data$omp.real.3, colour = "trial 3")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(100,200)) +
+  theme_bw() + labs(title = "omp() Real Time Trials 1-3")
+
+#PThread Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$pthread.real.1, colour = "trial 1")) + 
+  geom_point(aes(y = Thread_Data$pthread.real.1, colour = "trial 1")) + 
+  geom_line(aes(y = Thread_Data$pthread.real.2, colour = "trial 2")) +
+  geom_point(aes(y = Thread_Data$pthread.real.2, colour = "trial 2")) + 
+  geom_line(aes(y = Thread_Data$pthread.real.3, colour = "trial 3")) + 
+  geom_point(aes(y = Thread_Data$pthread.real.3, colour = "trial 3")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(100,200)) +
+  theme_bw() + labs(title = "pthread() Real Time Trials 1-3")
+
+
+
+```
+
+
+
+###User Time Graphs: Averages Compared, then each of the individual graphs
+```{r}
+#Averages Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$fork.user.avg, colour = "fork")) + 
+  geom_point(aes(y = Thread_Data$fork.user.avg, colour = "fork")) +
+  geom_line(aes(y = Thread_Data$omp.user.avg, colour = "omp")) +
+  geom_point(aes(y = Thread_Data$omp.user.avg, colour = "omp")) +
+  geom_line(aes(y = Thread_Data$pthread.user.avg, colour = "pthread")) + 
+  geom_point(aes(y = Thread_Data$pthread.user.avg, colour = "pthread")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(175,450)) +
+  theme_bw() + labs(title = "User Time Averages")
+
+#Fork Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$fork.user.1, colour = "trial 1")) + 
+  geom_point(aes(y = Thread_Data$fork.user.1, colour = "trial 1")) + 
+  geom_line(aes(y = Thread_Data$fork.user.2, colour = "trial 2")) +
+  geom_point(aes(y = Thread_Data$fork.user.2, colour = "trial 2")) + 
+  geom_line(aes(y = Thread_Data$fork.user.3, colour = "trial 3")) + 
+  geom_point(aes(y = Thread_Data$fork.user.3, colour = "trial 3")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(175,450)) +
+  theme_bw() + labs(title = "fork() User Time Trials 1-3")
+
+#OMP Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$omp.user.1, colour = "trial 1")) + 
+  geom_point(aes(y = Thread_Data$omp.user.1, colour = "trial 1")) + 
+  geom_line(aes(y = Thread_Data$omp.user.2, colour = "trial 2")) +
+  geom_point(aes(y = Thread_Data$omp.user.2, colour = "trial 2")) + 
+  geom_line(aes(y = Thread_Data$omp.user.3, colour = "trial 3")) + 
+  geom_point(aes(y = Thread_Data$omp.user.3, colour = "trial 3")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(175,450)) +
+  theme_bw() + labs(title = "omp() User Time Trials 1-3")
+
+#PThread Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$pthread.user.1, colour = "trial 1")) + 
+  geom_point(aes(y = Thread_Data$pthread.user.1, colour = "trial 1")) + 
+  geom_line(aes(y = Thread_Data$pthread.user.2, colour = "trial 2")) +
+  geom_point(aes(y = Thread_Data$pthread.user.2, colour = "trial 2")) + 
+  geom_line(aes(y = Thread_Data$pthread.user.3, colour = "trial 3")) + 
+  geom_point(aes(y = Thread_Data$pthread.user.3, colour = "trial 3")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(175,450)) +
+  theme_bw() + labs(title = "pthread() User Time Trials 1-3")
+```
+
+###System Time Graphs: Averages Compared, then each of the individual graphs
+```{r}
+#Averages Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$fork.syst.avg, colour = "fork")) + 
+  geom_point(aes(y = Thread_Data$fork.syst.avg, colour = "fork")) +
+  geom_line(aes(y = Thread_Data$omp.syst.avg, colour = "omp")) +
+  geom_point(aes(y = Thread_Data$omp.syst.avg, colour = "omp")) +
+  geom_line(aes(y = Thread_Data$pthread.syst.avg, colour = "pthread")) + 
+  geom_point(aes(y = Thread_Data$pthread.syst.avg, colour = "pthread")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(0,2)) +
+  theme_bw() + labs(title = "System Time Averages")
+
+#Fork Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$fork.syst.1, colour = "trial 1")) + 
+  geom_point(aes(y = Thread_Data$fork.syst.1, colour = "trial 1")) + 
+  geom_line(aes(y = Thread_Data$fork.syst.2, colour = "trial 2")) +
+  geom_point(aes(y = Thread_Data$fork.syst.2, colour = "trial 2")) + 
+  geom_line(aes(y = Thread_Data$fork.syst.3, colour = "trial 3")) + 
+  geom_point(aes(y = Thread_Data$fork.syst.3, colour = "trial 3")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(0,2)) +
+  theme_bw() + labs(title = "fork() System Time Trials 1-3")
+
+#OMP Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$omp.syst.1, colour = "trial 1")) + 
+  geom_point(aes(y = Thread_Data$omp.syst.1, colour = "trial 1")) + 
+  geom_line(aes(y = Thread_Data$omp.syst.2, colour = "trial 2")) +
+  geom_point(aes(y = Thread_Data$omp.syst.2, colour = "trial 2")) + 
+  geom_line(aes(y = Thread_Data$omp.syst.3, colour = "trial 3")) + 
+  geom_point(aes(y = Thread_Data$omp.syst.3, colour = "trial 3")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(0,2)) +
+  theme_bw() + labs(title = "omp() System Time Trials 1-3")
+
+#PThread Graph
+ggplot(Thread_Data, aes(Thread_Data$Processes)) + 
+  geom_line(aes(y = Thread_Data$pthread.syst.1, colour = "trial 1")) + 
+  geom_point(aes(y = Thread_Data$pthread.syst.1, colour = "trial 1")) + 
+  geom_line(aes(y = Thread_Data$pthread.syst.2, colour = "trial 2")) +
+  geom_point(aes(y = Thread_Data$pthread.syst.2, colour = "trial 2")) + 
+  geom_line(aes(y = Thread_Data$pthread.syst.3, colour = "trial 3")) + 
+  geom_point(aes(y = Thread_Data$pthread.syst.3, colour = "trial 3")) + 
+  scale_x_continuous(name = "Number of Processes", breaks = c(1,2,3,4,5,6,7,8,9,10), limits = c(1,10)) +
+  scale_y_continuous(name = "Runtime (seconds)", limits = c(0,2)) +
+  theme_bw() + labs(title = "pthread() System Time Trials 1-3")
+```
+
