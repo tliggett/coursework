@@ -1,5 +1,6 @@
 # Chapter 5 Notes
 
+###Business Process
 **business process**: set of tasks to accomplish a goal.
 1. Beginning and ending
 2. uses resources (input, i.e. material/work) -- and creates output
@@ -11,7 +12,9 @@
 
 IT automation can augment and replace
 
-Functional (Silo) Information Systems
+*Transform* business process
+
+###Functional (Silo) Information Systems
 porter's two types of functional systems
 1. Operations + Manufacturing
 	- transaction process systems (tps) ==> capacity planning
@@ -21,3 +24,11 @@ porter's two types of functional systems
 		- pull demand, can wait to produce until customer orders it
 
 2. Sales / Marketing
+	- how do you find customers
+	- pricing
+	- forecasting
+
+
+ERP (Database): Cross functional software
+1. CRM (Customer Relationship Management), need to combine sales & service
+2. ERP: Oracle & SAP
