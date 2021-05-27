@@ -1,0 +1,179 @@
+---
+title: "Case Study 3"
+output: html_notebook
+---
+
+### Trevor Gibson, Madden Pikula, Ryan Wesp, TJ Liggett
+
+
+
+
+```{r setup}
+library(factoextra)
+library(tidyverse)
+```
+
+1.    Inspect the data for any extreme, missing, or non-typical values. Everything should be either numerical and an expected range, dates, or strings.
+
+
+```{r}
+sales <- read.csv("sales.csv")
+
+##take a peek at our data
+summary(sales)
+
+## Check for missing data
+sum(is.na(sales))
+
+```
+
+```{r}
+## We convert the Invoices, Stock code, and customer id as characters
+sales$Invoice_No<-as.character(sales$Invoice_No)
+sales$Stock_Code<-as.character(sales$Stock_Code)
+sales$Customer_ID<-as.character(sales$Customer_ID)
+
+## We need to change the date variable from a string to date
+sales$Invoice_Date <- as.Date(sales$Invoice_Date, '%m/ %d/ %Y')
+```
+
+```{r}
+# Set the current date as May 5th
+now <- as.Date("05/05/2021",'%m/ %d/ %Y')
+
+## Let's see how many unique customers we have
+length(unique(sales$Customer_ID))
+```
+We have 3813 unique customers.
+
+
+2.    Create the RFM metrics on a scale from 1-5 with 5 being the best for each customer
+
+```{r}
+## Calculating the RFM Table we first start with Recency by looking at the most
+## recent invoice for each customer
+## This will take the latest date for each customer and store it in a table
+R_table <- aggregate(Invoice_Date ~ Customer_ID,sales,FUN=max)
+## This will give the number of days since last purchase according to our 
+## reference point of 12/31/2020
+R_table$days <- as.numeric(now-R_table$Invoice_Date)
+
+## R is done let's move to Frequency. We will again aggregate but this time add the
+## number of invoices for each customer
+F_table <- aggregate(Invoice_Date~Customer_ID,sales,FUN=length)
+
+## RF are done lastly let's find M by taking the sum of all the invoices for each
+## customer ID
+
+M_table <-aggregate(Amount~Customer_ID,sales,FUN=sum)
+```
+
+
+```{r}
+## Now let's merge these three tables into one using the customer ID as the merging
+## condition
+RFM_table <-merge(R_table,F_table,by.x="Customer_ID",by.y="Customer_ID")
+RFM_table <-merge(RFM_table,M_table,by.x="Customer_ID",by.y="Customer_ID")
+## We can delete the most recent invoice date by deleting the second column
+RFM_table <- RFM_table[-2]
+```
+
+
+```{r}
+## Giving the R score based on most recent being 5 and least recent a 1
+RFM_table$R <- abs(6-findInterval(RFM_table$days, quantile(RFM_table$days, c(0.0, 0.2, 0.4, 0.6, 0.8)))) 
+
+## Giving the F score based on most orders 5 and least orders a 1
+RFM_table$F <- findInterval(RFM_table$Invoice_Date.y, quantile(RFM_table$Invoice_Date.y, c(0.0, 0.2, 0.4, 0.6, 0.8)))
+
+## Giving the M score based on most money 5 and least money 1
+RFM_table$M <- findInterval(RFM_table$Amount, quantile(RFM_table$Amount, c(0.0, 0.2, 0.4, 0.6, 0.8)))
+
+## We can combine all 3 into one variable
+RFM_table$RFM <-as.character(paste(RFM_table$R,RFM_table$F,RFM_table$M))
+```
+
+3.    Manually create groups such as best customers, churned, whales, rookies, ect and report how many customers fall into each of these groupings
+
+```{r}
+best_customers <- RFM_table %>%
+  filter(R %in% c('4', '5') & F %in% c('4', '5') & M %in% c('4', '5'))
+rookies <- RFM_table %>%
+  filter(R %in% c('4', '5') & F %in% c('1', '2') & M %in% c('4', '5'))
+lowloyal <- RFM_table %>%
+  filter(R %in% c('4', '5') & F %in% c('4', '5') & M %in% c('1', '2'))
+churned <- RFM_table %>%
+  filter(R %in% c('1', '2') & F %in% c('4', '5') & M %in% c('4', '5'))
+whales <- RFM_table %>%
+  filter(M %in% c('5'))
+```
+
+
+```{r}
+length(best_customers$Customer_ID)
+length(rookies$Customer_ID)
+length(lowloyal$Customer_ID)
+length(churned$Customer_ID)
+length(whales$Customer_ID)
+```
+There are 808 best customers, 36 rookies, 32 loyal but low spending, 188 churned, and 763 whales.
+
+4.    Create the k-means cluster group based on the days since last order, total orders, and total money. Report how many customers fall into these categories.
+
+```{r}
+## Let's do some k-means cluster analysis. First create a dataframe with only days since last order,
+## total number of orders, and total dollar amount spent
+clus <- RFM_table[,c(2,3,4)]
+
+## These two graphs will help us find the optimal number of clusters
+fviz_nbclust(clus, kmeans,method="wss")
+fviz_nbclust(clus, kmeans,method="silhouette")
+```
+We chose to cluster into three groups, we see the first graph flatten around three, and the second graph start to drop off.
+
+```{r}
+## Applying k-means cluster analysis with 3 distinct groups and 30 random starts
+km<-kmeans(clus,centers=3,nstart=30)
+
+## Here is a 2D visualization of the clusters
+fviz_cluster(km, data = clus)
+
+## Lastly Adding the k-means clusters to our table
+RFM_table$cluster <- km$cluster
+```
+
+
+```{r}
+RFM_table %>%
+  group_by(cluster) %>%
+  summarise(count = n())
+```
+
+The k-means clusters partitioned our customers into one large group and two really small groups, as shown above.
+
+```{r}
+RFM_table %>%
+  filter(cluster == 1)
+
+RFM_table %>%
+  filter(cluster == 3)
+```
+
+After further investigation, the group of 3 customers saw customers spending over $150,000, way more than the other customers. The other group seemed to be 29 high spenders of a smaller magnitude.
+
+5.    Compare the groups you made manually to the ones created from the cluster analysis. Do they match up? 
+
+The K-Means clustering valued the total amount of money spent far more than we had grouped. With only three groupings it would be harder to use promotions to really target groupings because cluster one and three both value the very extreme customers. However, if you were to target groups one or three you would have the absolute best customers to target with promotions.
+
+6.    For each of the groupings, either create a promotion for them or choose to ignore them. Explain the rationale why you chose that promotion or ignored them. 
+
+Best: We don’t really want to offer anything to these customers at this time. They are already our best customers and seem to show no signs of slowing down. One option we could use is offering a referral incentive to these customers. If they were to refer or bring in new customers, we could offer them some kind of discount for bringing in new customers for us. 
+
+Rookies: Because rookies are new, high spenders the most important task is increasing the frequency of their purchases. One way to increase frequency could be using punch-card-like rewards programs within a certain time period that reward customers for a certain amount of purchases within a given time period. 
+
+Low Spending, Loyal Customers: These customers purchase often and recently, but they do not spend a lot of money. So, we need to offer a promotion to get these customers to spend more money. One way to do this is to create a promotion where you get a reward for spending a certain amount of money. An example of this is offering a $10 gift card to customers for purchases of $100 or more. This will incentivize customers to spend more money while also getting them to come back to use the gift card.
+
+Churning Customers: One way you could re-engage churned customers is to send personalized emails or push notifications that target the customer directly given their past purchase history. Another way could be sending a survey to empower the customer to give input on the availability of certain products within the store.
+
+Whales: Because we categorized whales as anyone who spends the highest dollar amount we do not necessarily need to promote anything specifically so that we do not change their current spending behavior.
+

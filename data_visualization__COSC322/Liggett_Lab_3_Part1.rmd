@@ -1,0 +1,59 @@
+---
+title: "Flights from NYC by Carrier from Tampa Intl."
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    source_code: embed
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(ggplot2)
+library(nycflights13)
+```
+
+```{r global, include=FALSE}
+# load data in 'global' chunk so it can be shared by all users of the dashboard
+data(flights)
+data(airports)
+
+carriers <- flights %>%
+    filter(dest %in% c("TPA")) %>%
+    group_by(carrier) %>%
+    summarise(count = n()) %>%
+    arrange(desc(count))
+
+data(carriers)
+
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r}
+renderTable({
+  carriers
+})
+```
+
+Column
+-----------------------------------------------------------------------
+
+
+```{r}
+
+
+   
+renderPlot({
+  ggplot(data = carriers) +
+    geom_bar(stat = "identity", mapping = aes(x=reorder(carrier,-count), y = count, fill=count)) +
+    scale_fill_gradient(low="#FF7900", high="#D50A0A") +
+    labs(title = "Tampa Intl. Flights by Carrier", x = "Carrier", y="Number of Flights") +
+    theme_bw() +
+    theme(legend.position = "none")
+})
+```
+

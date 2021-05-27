@@ -1,0 +1,9 @@
+Variable,Description
+No,Identifier for the transaction number
+transaction,Date the transaction took place
+price,The dollar price per square foot of the house
+age,How old the house is in years
+mrt,Distance in yards from the nearest Mass Rapid Transit station
+con,The number of convenience stores in close proximity
+lat,The latitude coordinates of the house
+long,The longitute coordinates of the house

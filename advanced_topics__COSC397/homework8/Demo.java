@@ -1,3 +1,9 @@
+//TJ Liggett
+//COSC 397: Advanced Topics
+//Homework 8
+//Demo.java
+
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.Random;

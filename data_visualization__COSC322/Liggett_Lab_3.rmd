@@ -1,0 +1,77 @@
+---
+title: "Flights from NYC by Carrier from Top 30 Destinations"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    source_code: embed
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(ggplot2)
+library(nycflights13)
+```
+
+```{r global, include=FALSE}
+# load data in 'global' chunk so it can be shared by all users of the dashboard
+data(flights)
+data(airports)
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+Displays the top carriers for a given airport based on the total number of flights front New York City in 2013.
+
+```{r}
+flight_dest <- flights %>%
+  group_by(dest) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count)) %>%
+  top_n(30)
+
+dest_airports <- airports %>%
+  filter(faa %in% flight_dest$dest)
+
+selectInput("dest", label = "Destination Airport",
+            choices = dest_airports$name, selected = "Tampa Intl")
+
+renderTable({
+  carriers()
+})
+```
+
+Column
+-----------------------------------------------------------------------
+
+
+```{r}
+dest_faa <- reactive(
+  airports %>%
+    filter(name %in% c(input$dest)) %>% 
+    .$faa
+    )
+
+carriers  <- reactive(
+  flights %>%
+    filter(dest %in% c(dest_faa())) %>%
+    group_by(carrier) %>%
+    summarise(count = n()) %>%
+    arrange(desc(count))
+)
+
+plot_title <- reactive(paste(input$dest," Flights by Carrier"))
+   
+renderPlot({
+  ggplot(data = carriers()) +
+    geom_bar(stat = "identity", mapping = aes(x=reorder(carrier,-count), y = count, fill=count)) +
+    scale_fill_gradient(low="#caf7e3", high="#e4bad4") +
+    labs(title = plot_title(), x = "Carrier", y="Number of Flights") +
+    theme_bw() +
+    theme(legend.position = "none")
+})
+```
+

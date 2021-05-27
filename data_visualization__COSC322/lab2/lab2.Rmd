@@ -1,0 +1,45 @@
+---
+title: "Lab 2"
+author: "T.J. Liggett"
+date: "2/17/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+
+```{r}
+billboard <- read.csv("lab2/HotStuff2019.csv")
+billboard$date <- as.Date(billboard$WeekID, format = "%m/%d/%Y")
+billboard$year <-format(billboard$date, "%Y")
+```
+
+```{r}
+prince_hits <- billboard %>%
+  filter(Performer %in% c("Prince")) %>%
+  distinct(year, Song, .keep_all = TRUE)
+```
+
+
+
+```{r}
+year_hits <-prince_hits %>%
+ group_by(year) %>%
+  summarise(count = n())
+```
+
+
+```{r}
+year_hits$year <- as.Date(year_hits$year, "%Y")
+ggplot(data = year_hits) +
+  geom_bar(stat = "identity", mapping = aes(x = year, y = count)) +
+  theme_bw() +
+  labs(title = "Prince's Number of Charted Songs per Year")
+```
+

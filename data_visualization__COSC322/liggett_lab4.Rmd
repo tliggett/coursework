@@ -1,0 +1,107 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r}
+library(maps)
+library(ggplot2)
+world <- map_data("world")
+```
+
+Create a world map in the mercator projection.  The center of your map should be at the equator and 0 degrees longitude.  If you get strange horizontal lines in this map, you may need to limit coordinates on the edges of the map -- in this case, add this to the coord_map call:  xlim=c(-179.9,179.9), ylim=c(-89,89)
+
+
+```{r}
+p <- ggplot(data = world,
+            mapping = aes(x = long, y = lat,
+                          group = group))
+
+p + geom_polygon(fill = "burlywood2", color = "brown4")  +
+  coord_map(projection = "mercator", xlim=c(-179.9,179.9), ylim=c(-89,89)) +
+  theme_bw() +
+  labs(title = "Mercator Projection of the World")
+
+```
+Using the same data and extents, create a global map in the Sinusoidal projection.  Describe how this differs from the map above it.
+
+```{r}
+p + geom_polygon(fill = "burlywood2", color = "brown4")  +
+  coord_map(projection = "sinusoidal", xlim=c(-179.9,179.9), ylim=c(-89,89)) +
+  theme_bw() +
+  labs(title = "Sinusoidal Projection of the World")
+```
+
+While the latitudes on the sinusoidal projection appear to be plotted similarly, the longitudes appear to be plotted in a sort of pseudo-cylindrical fashion. The shapes are distorted, especially far from the equator in latitude. However, the areas look to be better represented than the Mercator projection.
+
+
+And again with the Vander Grinten projection.  Describe how this differs from the Sinusoidal map.
+
+```{r}
+p + geom_polygon(fill = "burlywood2", color = "brown4")  +
+  coord_map(projection = "vandergrinten", xlim=c(-179.9,179.9), ylim=c(-89,89)) +
+  theme_bw() +
+  labs(title = "Vander Grinten Projection of the World")
+```
+The Vander Grinten projection looks similar to the Sinusoidal, especially when plotting longitudes. However, the latitudes appear to be plotted in a bowed-out manner, which appears to have greatly helped the shapes of the continents. While the shapes look better, the area looks to get distorted at extremely high and low latitudes.
+
+Now use the Mollweide projection.  Again, contrast this with the Sinusoidal.
+
+```{r}
+p + geom_polygon(fill = "burlywood2", color = "brown4")  +
+  coord_map(projection = "mollweide", xlim=c(-179.9,179.9), ylim=c(-89,89)) +
+  theme_bw() +
+  labs(title = "Mollweide Projection of the World")
+```
+
+The Mollweide projection looks like a compromise between the Mercator and Sinusoidal projections. Latitudes are again plotted flat, but the longitudes are plotted more widely, with an almost perfect circle mapping latitude 100/-100.
+
+
+
+Next we will focus on hemispheres.  Plot an Orthographic projection centered on the North Pole.  This is the default orientation.
+
+```{r}
+p + geom_polygon(fill = "burlywood2", color = "brown4")  +
+  coord_map(projection = "orthographic") +
+  theme_bw() +
+  labs(title = "Orthographic Projection: North Pole")
+```
+
+
+Plot an Orthographic projection centered at the South Pole.  To accomplish this, you will need to use coord_map’s orientation parameter.
+
+```{r}
+p + geom_polygon(fill = "burlywood2", color = "brown4")  +
+  coord_map(projection = "ortho", orientation = c(-90, 0, 0)) +
+  theme_bw() +
+  labs(title = "Orthographic Projection: South Pole")
+```
+
+
+Plot an Orthographic projection (approximately) centered on the United States.
+
+```{r}
+p + geom_polygon(fill = "burlywood2", color = "brown4")  +
+  coord_map(projection = "ortho", orientation = c(40, -104, 0), xlim = c(-180,0)) +
+  theme_bw() +
+  labs(title = "Orthographic Projection: North America")
+```
+
+
+(15 pts) Create a map of North America in the Albers projection.  Center your map at 100oW, with standard parallels of 23oN and 50oN.  Limit your data extent to the northern hemisphere between 150oW and 45oW.  (note that 100oW is a longitude value of -100).
+
+```{r}
+namerica = map_data("world", region=c("USA","Mexico","Canada"))
+
+ggplot(data = world,
+        mapping = aes(x = long, y = lat,
+                          group = group)) +
+  geom_polygon(fill = "white", color = "black")  +
+  coord_map(projection = "albers", parameters = c(lat0 = 23, lat1 = 50), orientation = c(90, -100, 0), xlim=c(-150,-45), ylim=c(0,89), clip="on") + 
+  theme_bw() +
+  labs(title = "Albers Projection: North America")
+```
+

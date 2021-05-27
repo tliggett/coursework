@@ -443,9 +443,9 @@ class Strawberry implements Mob{
   void display(){
     if(onScreen()){
     if(health > 0){
-      image(strawberry.get("proto"),location.x-(warrior.location.x-(width/2)), location.y-(warrior.location.y-(height/2)), size.x, size.y);
+      //image(strawberry.get("proto"),location.x-(warrior.location.x-(width/2)), location.y-(warrior.location.y-(height/2)), size.x, size.y);
       
-    /*if(!strike){
+    if(!strike){
     if(left) image(strawberry.get("baseL"), location.x-(warrior.location.x-(width/2)), location.y-(warrior.location.y-(height/2)), size.x, size.y);
     else image(strawberry.get("baseR"), location.x-(warrior.location.x-(width/2)), location.y-(warrior.location.y-(height/2)), size.x, size.y);
     }else{
@@ -455,11 +455,11 @@ class Strawberry implements Mob{
        image(strawberry.get(("kickR_0" + (int)kick)), location.x-(warrior.location.x-(width/2)), location.y-(warrior.location.y-(height/2)), size.x, size.y);
      }
       
-    }*/
+    }
     
 
     }else{
-    //image(strawberry.get("sliced"), location.x-(warrior.location.x-(width/2)), location.y-(warrior.location.y-(height/2)), size.x, size.y);
+    image(strawberry.get("sliced"), location.x-(warrior.location.x-(width/2)), location.y-(warrior.location.y-(height/2)), size.x, size.y);
     }
       
     }

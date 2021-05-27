@@ -1,0 +1,183 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+```{r}
+library(caTools)
+library(rpart)
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+library(caret) 
+library(dplyr)
+```
+
+
+```{r}
+churn <- read.csv("churn.csv")
+```
+
+
+
+1.    Inspect the data for any extreme, missing, or non-typical values. Everything should be either numerical and an expected range or categorical with expected responses.
+
+```{r}
+summary(churn)
+```
+
+
+
+2.    Split your data into test and training sets. Common split ratios are anywhere from 70:30 to 80:20.
+## Split the data into a training set and test test
+```{r}
+set.seed(43)
+sample <- sample.split(churn$Churn,SplitRatio=0.7)
+train <- subset(churn,sample==TRUE)
+test <- subset(churn,sample==FALSE)
+```
+
+
+3.    Create an initial decision tree model with Churn as your class label and all of the other variables as attributes.
+## Creating the Full Tree Model
+```{r}
+tree <- rpart(Churn ~ ., data=train, method = "class",
+                     parms = list(split = 'information'),cp=-1)
+tree
+fancyRpartPlot(tree)
+```
+
+4.    Check the accuracy of your full model with Accuracy and F1 scores.
+## Calculate the Predictions from the test data
+```{r}
+pred <-predict(tree,test,type = "class")
+```
+
+
+## Calculate the Confusion Matrix and fit measures
+```{r}
+conf <- table(pred,test$Churn)
+confusionMatrix(conf)
+confusionMatrix(conf)$byClass
+```
+Accuracy: 0.78
+F1: 0.854
+
+
+5.    Create a pre-pruned decision tree by setting stop parameters.
+## Pre-Pruning Method
+## Fit the Model
+```{r}
+pre_tree <-  rpart(Churn ~ ., data=train, method = "class",
+               parms = list(split = 'information'),maxdepth = 4, minsplit = 10, minbucket = 5)
+pre_tree
+fancyRpartPlot(pre_tree)
+```
+
+
+6.    Check the accuracy of your pre-pruned model with Accuracy and F1 scores.
+## Make the predictions
+```{r}
+pre_pred<-predict(pre_tree,test,type = "class")
+```
+
+
+
+## Measures of Fit
+```{r}
+pre_conf <- table(pre_pred,test$Churn)
+confusionMatrix(pre_conf)
+confusionMatrix(pre_conf)$byClass
+```
+Accuracy: 0.77
+F1:       0.843
+
+7.    Create a post-pruned decision tree by finding an optimal complexity parameter.
+## Post-Pruning Method
+## Find the CP
+```{r}
+printcp(tree)
+plotcp(tree)
+cp = tree$cptable[which.min(tree$cptable[,"xerror"]),"CP"]
+```
+
+## Fit the Model
+```{r}
+post_tree <- rpart(Churn ~ ., data=train, method = "class",
+             parms = list(split = 'information'),cp=cp)
+post_tree
+fancyRpartPlot(post_tree)
+```
+
+
+8.    Check the accuracy of your post-pruned model Accuracy and F1 scores.
+## Make the Predictions
+```{r}
+post_pred<-predict(post_tree,test,type = "class")
+```
+
+
+
+## Measures of Fit
+```{r}
+post_conf <- table(post_pred,test$Churn)
+confusionMatrix(post_conf)
+confusionMatrix(post_conf)$byClass
+```
+Accuracy:     0.807
+F1:           0.871
+
+
+9.    Select your final model based on your fit metrics.
+
+We chose to use the post prune model because it gave us both the highest accuracy and F1 scores of our models.
+
+```{r}
+churn_group3 <- read.csv("group3churn.csv")
+
+# Fixing no internet values that were having some issues.
+churn_group3$Internet_service[churn_group3$Internet_service == "No internet"] <- "No internet "
+churn_group3$Technical_support[churn_group3$Technical_support == "No internet"] <- "No internet "
+churn_group3$Streaming_Videos[churn_group3$Streaming_Videos == "No internet"] <- "No internet "
+
+# The Total_Charges needs to be a numeric as before, get rid of the commas.
+churn_group3$Total_Charges <- as.numeric(gsub(",", "", churn_group3$Total_Charges))
+
+# Here we predict our churn
+churn_group3$Churn <-predict(post_tree,churn_group3,type = "class")
+
+churn_group3 %>% 
+  select(Name, Churn)
+```
+
+
+
+
+
+## A short write-up on which model you chose to deploy and rationale for it.
+
+We chose to use the post prune model because it gave us both the highest accuracy and F1 scores of our models.
+
+## A short write-up on which factors were most important in determining who is at risk of churning.
+
+The most important factors for determining who is at risk of churning were agreement period, monthly charges, and total charges. These were the factors that were used in our post prune model.
+
+## A short write-up on which customers should be recommended for the promotion rate. 
+
+```{r}
+churn_group3 %>% select(Name, Churn)
+```
+
+We would recommend Nicole Black, Manuel Gross, and Cody Reed for the promotion rate. These were the customers that our model predicted would churn. Giving them a promotional rate might keep them with the company longer.
+
+
+
+
+
+
+

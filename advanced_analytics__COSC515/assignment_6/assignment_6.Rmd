@@ -1,0 +1,89 @@
+---
+title: "Assignment 6"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r}
+## Load up some packages we will be using for Decision Trees
+library(caTools)
+library(rpart)
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+library(caret) 
+```
+
+
+```{r}
+diabetes <- read.csv("diabetes.csv")
+```
+
+1. Split your data using a 2/3 training and 1/3 test split
+```{r}
+set.seed(5)
+d_sample <- sample.split(diabetes$Outcome,SplitRatio=0.67)
+diabetes_train <- subset(diabetes,d_sample==TRUE)
+diabetes_test <- subset(diabetes,d_sample==FALSE)
+```
+
+
+2. Create a full decision tree with your Training Data. Outcome is your class label and all other variables can be used as attributes of your model
+```{r}
+diabetes_tree <- rpart(Outcome ~ ., data=diabetes_train, method = "class",
+                     parms = list(split = 'information'),cp=-1)
+diabetes_tree
+```
+
+
+3. Create the graphic of the decision tree you just made
+```{r}
+fancyRpartPlot(diabetes_tree)
+```
+
+
+
+4. Test the Accuracy of this model of with Test Data
+```{r}
+pred <-predict(diabetes_tree,diabetes_test,type = "class")
+conf <- table(pred,diabetes_test$Outcome)
+confusionMatrix(conf)
+confusionMatrix(conf)$byClass
+```
+
+
+5. Create a post-pruned decision tree with your Training Data with the graphic. Use 
+```{r}
+printcp(diabetes_tree)
+plotcp(diabetes_tree)
+cp = diabetes_tree$cptable[which.min(diabetes_tree$cptable[,"xerror"]),"CP"]
+```
+
+## Fit the Model
+```{r}
+post_diabetes_tree <- rpart(Outcome ~ ., data=diabetes_train, method = "class",
+             parms = list(split = 'information'),cp=cp)
+post_diabetes_tree
+```
+
+```{r}
+fancyRpartPlot(post_diabetes_tree)
+```
+
+6. Test the accuracy of your post-pruned tree with the Test Data. Did we improve the fit of the model by pruning?
+
+We improve the models by 5.5 percent. The first model had about 70% accuracy, and the post pruning model about 75.5% accuracy.
+
+## Make the Predictions
+```{r}
+post_pred<-predict(post_diabetes_tree,diabetes_test,type = "class")
+```
+
+## Measures of Fit
+```{r}
+post_conf <- table(post_pred,diabetes_test$Outcome)
+confusionMatrix(post_conf)
+confusionMatrix(post_conf)$byClass
+```

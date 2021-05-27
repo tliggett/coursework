@@ -1,0 +1,127 @@
+---
+title: 'Case Study #1'
+author: "T.J. Liggett, Madden Pikula, Trevor Gibson, Ryan Wesp"
+date: "3/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#Load in required packages
+library("car")
+library("DescTools")
+library("dplyr")
+
+# Read in both the training and test data sets.
+loan <- read.csv("loan.csv")
+group_3 <- read.csv("loan Group3.csv")
+```
+
+1.    Inspect the data for any extreme, missing, or non-typical values. Everything should be either numerical and an expected range or categorical with expected responses.
+
+```{r}
+summary(loan)
+```
+
+From our observations, all of the data appeared to be in order. There weren't any extreme or missing values. The only issue appears to be credit score: FICO credit scores have a maximum value of 850, but many of the observations appear to be much higher than that.
+
+In addition to grooming the data set, legal obligations require us to remove gender, age, and marital status from our model.
+
+```{r}
+loan <- subset(loan, select = -c(Gender, Age, Marital_status) )
+```
+
+
+
+2.    Transform any of the categorical factors to a binary variable.
+
+There was one categorical variable, Emp_status, which we needed to change to a binary variable.
+
+```{r}
+loan$isEmployed=0
+loan$isEmployed[loan$Emp_status=="employed"]=1
+
+group_3$isEmployed=0
+group_3$isEmployed[group_3$Emp_status=="employed"]=1
+```
+
+
+3.    Create an initial logistic regression model with Default as your dependent variable and all of the other variables as independent.
+
+Checking_amount
+Term
+Credit_score
+Car_loan
+Personal_loan
+Home_loan
+Education_loan
+isEmployed
+Amount
+Saving_amount
+Emp_duration
+No_of_credit_acc
+
+```{r}
+fit<-glm(Default~Checking_amount+Term+Credit_score+Car_loan+Personal_loan+Home_loan+Education_loan+isEmployed+Amount+Saving_amount+Emp_duration+No_of_credit_acc,data=loan,family=binomial)
+summary(fit)
+```
+
+4.    Check the VIF and drop any variables that are causing multicollinearity issues.
+
+```{r}
+vif(fit)
+```
+Looking at the vif scores, we can see that personal loan has a score of over 75. We will drop this variable and build a new model.
+
+```{r}
+fit<-glm(Default~Checking_amount+Term+Credit_score+Car_loan+Home_loan+Education_loan+isEmployed+Amount+Saving_amount+Emp_duration+No_of_credit_acc,data=loan,family=binomial)
+summary(fit)
+```
+
+
+
+5.    At your discretion, drop any additional factors that may be unnecessary to your analysis.
+
+The number of credit accounts (No_of_credit_acc) and the emp_duration both have a p-value higher than 0.2. With both p values so close, we chose to remove emp_duration, as this variable seems to have less impact on our model, and we already have another employment variable in is_employed.
+
+
+```{r}
+fit<-glm(Default~Checking_amount+Term+Credit_score+Car_loan+Home_loan+Education_loan+isEmployed+Amount+Saving_amount+No_of_credit_acc,data=loan,family=binomial)
+summary(fit)
+```
+
+
+
+6.    Report the fit of your model.
+```{r}
+PseudoR2(fit)
+```
+
+The McFadden Pseudo R squared value for our model was about 0.58.
+
+```{r}
+group_3$Default <- predict(fit,group_3, type="response")
+
+group_3$Approved="no"
+group_3$Approved[group_3$Default <= 0.5]="yes"
+
+group_3 %>%
+  select(Name, Default, Approved)
+
+```
+
+Based on these predictions, we would only want to approve Orville Hammond and Preston Mcguire for further review of a loan.
+
+
+
+## A short write-up on which factors you included in your model and the reasons for leaving some of them out.
+
+Gender, Marriage status, and Age are three factors that we excluded from the data set due to legal implications. Other factors we excluded were personal loan and number of credit accounts. We excluded personal loans because it had a VIF of 75.21 which is extremely high. Number of credit accounts was excluded because its P-value of 0.22 was not significant. 
+
+## A short write-up on which applicants should be denied or considered for further review. Give some rationale on why you chose the cut-off for deny or further review.
+
+The only two people that were approved for further loan approval review were Oreville Hammond and Preston McGuire. Of the 10 applicants, only two had prediction values below 0.7. In addition, both Preston and Oreville had a very low percent chance to default with both being under 0.01. Given our set of data, the cutoff was very clear for the applicants given. If we were given more people in the data set it may have been more difficult to determine where the cutoff value was but for this set of applicants the decisions were clear. 

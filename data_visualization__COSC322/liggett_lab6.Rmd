@@ -1,0 +1,295 @@
+---
+title: "COSC 322 LAB 6"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+library(igraph)
+library(tidyverse)
+library(visNetwork)
+library(networkD3)
+```
+## T.J. Liggett
+
+1. Create a Simple Network and Visualize it:  Using the very simple network presented in today’s lecture slides and the igraph and visNetwork libraries (and any others you might need), add attributes (names) to each of the nodes (you will need to refer to the package documentation to see how to do this).  Make sure these attributes show in your visualization (use the visNetwork package for your visualization here).
+
+```{r}
+
+nodes <- tibble(id = 1:4,
+                    
+  # add labels on nodes
+  label = paste("Node", 1:4),
+  
+  # color
+  color = c("darkred", "grey", "orange", "darkblue")
+
+  )             
+
+edges <- tibble(from = c(1, 2, 2, 3, 4), to = c(2, 3, 4, 2, 1))
+
+visNetwork(nodes, edges) %>%
+  visEdges(arrows = "middle")
+
+```
+
+
+2. Create Network Data:  Now that you have an understanding of how to create a simple network, it is time to gather some data that is more familiar to us.  You are to gather data for a number of majors at Augie:   Computer Science & SW Eng, Data Science, Computer Information Systems, Math, Physics, and Business Administration.  You may (should) work together on this.  The major is a node and the courses are also nodes.  Nodes from classes common to more than one major are NOT duplicated.
+
+```{r}
+cosc_req <- tibble(id = c("COSC 130", "COSC 210", "COSC 211", "COSC 235", "COSC 260", "COSC 310",
+                   "COSC 327", "COSC 330", "COSC 350", "MATH 151", "MATH 320", "MATH 315"))
+
+cosc_elec <- tibble(id = c("COSC 225",			
+                    "COSC 226",
+                    "COSC 215",
+                    "COSC 315",
+                    "COSC 322",
+                    "COSC 342",
+                    "COSC 380",
+                    "COSC 212",
+                    "COSC 320",
+                    "COSC 180",
+                    "COSC 397"))
+
+dasc_req <- tibble(id = c(
+  "COSC 210", "COSC 211", "COSC 212", "COSC 215", "COSC 315", "COSC 322",
+  "MATH 151", "MATH 152", "MATH 315", "MATH 320", "MATH 327" 
+))
+
+dasc_elec <- tibble(id = c(
+ "COSC 241",
+ "COSC 342",
+ "COSC 260",
+ "COSC 380",
+ "MATH 220",
+ "MATH 345",
+ "MATH 397",
+ "COSC 397"
+))
+					
+
+
+cis_req <- tibble(id = c(
+  "COSC 130", "COSC 205", "COSC 210", "COSC 211", "COSC 241", "COSC 315",
+  "COSC 342", "BSAD 320", "ECON 120", "ECON 270" 
+))
+
+cis_elec <- tibble(id = c(
+  "ACCT 207",
+  "ACCT 210",
+  "BSAD 310",
+  "BSAD 330",
+  "COSC 235",
+  "COSC 260",
+  "COSC 225",
+  "COSC 397"
+))
+          
+
+math_req <- tibble(id = c(
+  "MATH 151", "MATH 152", "MATH 153", "MATH 200", "MATH 220", "MATH 490",
+  "COSC 210", "PHYS 221", "MATH 330", "MATH 335", "MATH 397"
+))
+
+math_elec <- tibble(id = c(
+  "MATH 340",
+  "MATH 345",
+  "MATH 350",
+  "MATH 355",
+  "MATH 310",
+  "MATH 315",
+  "MATH 320",
+  "MATH 327"
+))
+
+phys_req <- tibble(id = c(
+  "PHYS 221", "PHYS 222", "PHYS 281", "PHYS 321", "PHYS 371", "PHYS 381",
+  "MATH 151", "MATH 152", "MATH 153", "MATH 310", "PHYS 399"
+))
+
+phys_elec <- tibble(id = c(
+  "PHYS 331",
+  "PHYS 341",
+  "PHYS 351",
+  "PHYS 361",
+  "PHYS 363",
+  "PHYS 372",
+  "PHYS 373",
+  "PHYS 391",
+  "PHYS 395",
+  "PHYS 397"
+))
+
+bsad_req <- tibble(id = c(
+  "ACCT 210", "ACCT 211", "COSC 205", "ECON 270", "BSAD 310", "BSAD 320",
+  "BSAD 330", "BSAD 340", "BSAD 382", "BSAD 421"
+))
+
+bsad_elec <- tibble(id  = c(
+  "BSAD 490",
+  "BSAD 495",
+  "BSAD 499",
+  "ECON 120",
+  "ECON 121"
+))
+
+# Joins all of the courses together
+courses <- full_join(cosc_req, cosc_elec) %>%
+  full_join(., dasc_req) %>%
+  full_join(., dasc_elec) %>%
+  full_join(., cis_req) %>%
+  full_join(., cis_elec) %>%
+  full_join(., math_req) %>%
+  full_join(., math_elec) %>%
+  full_join(., bsad_req) %>%
+  full_join(., bsad_elec) %>%
+  full_join(., phys_req) %>%
+  full_join(., phys_elec)
+
+# Create node list out of majors and courses
+node_list <- full_join(tibble(id = c("MATH", "DASC", "COSC", "CIS", "BSAD", "PHYS")), courses)
+
+# Node lists for each major
+math_node_list <- full_join(tibble(id = c("MATH")), math_req)
+cosc_node_list <- full_join(tibble(id = c("COSC")), cosc_req)
+cis_node_list <- full_join(tibble(id = c("CIS")), cis_req)
+bsad_node_list <- full_join(tibble(id = c("BSAD")), bsad_req)
+dasc_node_list <- full_join(tibble(id = c("DASC")), dasc_req)
+phys_node_list <- full_join(tibble(id = c("PHYS")), phys_req)
+
+# Edge lists for each major
+math_edge_list <- tibble(from = c("MATH"), to = math_req$id)
+cosc_edge_list <- tibble(from = c("COSC"), to = cosc_req$id)
+cis_edge_list <- tibble(from = c("CIS"), to = cis_req$id)
+bsad_edge_list <- tibble(from = c("BSAD"), to = bsad_req$id)
+dasc_edge_list <- tibble(from = c("DASC"), to = dasc_req$id)
+phys_edge_list <- tibble(from = c("PHYS"), to = phys_req$id)
+
+# Creates a full edge list
+edge_list <- full_join(math_edge_list, cosc_edge_list) %>%
+  full_join(., cis_edge_list) %>%
+  full_join(., bsad_edge_list) %>%
+  full_join(., dasc_edge_list) %>%
+  full_join(., phys_edge_list)
+```
+
+
+
+3. Create a Major Requirements Network for your (first) major and Visualize it.  This should be a graph of courses with the Major centered in the graph.  Use color to differentiate between courses from different departments.  Do this task and 4 and 5 individually.
+
+```{r}
+# Create the CS node list and labels and color
+cosc_node_list <- full_join(tibble(id = c("COSC")), cosc_req)
+cosc_node_list$label <- cosc_node_list$id
+cosc_node_list <- cosc_node_list %>%
+    mutate(color = case_when(grepl('MATH', label)  ~ 'darkblue',
+                             grepl('DASC', label)  ~ 'purple',
+                             grepl('COSC', label)  ~ 'lightblue',
+                             grepl('ACCT', label)  ~ 'orange',
+                             grepl('ECON', label)  ~ 'green',
+                             grepl('BSAD', label)  ~ 'darkgreen',
+                             grepl('PHYS', label)  ~ 'grey',
+                             
+                                TRUE ~ 'darkred'))
+
+# add edges for all CS requirements
+cosc_edge_list <- tibble(from = c("COSC"), to = cosc_req$id)    
+
+# Using igraph layouts and arrows
+visNetwork(cosc_node_list, cosc_edge_list) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visEdges(arrows = "middle")
+
+```
+
+
+4. Create a multiple Major Requirements Network and Visualize it.  How do the requirements of the 6 Majors inter-relate (the courses common to more than one should form linkages between the majors!), and again use color to differentiate courses from different departments.
+
+```{r}
+# Node lists for each major
+math_node_list <- full_join(tibble(id = c("MATH")), math_req)
+cosc_node_list <- full_join(tibble(id = c("COSC")), cosc_req)
+cis_node_list <- full_join(tibble(id = c("CIS")), cis_req)
+bsad_node_list <- full_join(tibble(id = c("BSAD")), bsad_req)
+dasc_node_list <- full_join(tibble(id = c("DASC")), dasc_req)
+phys_node_list <- full_join(tibble(id = c("PHYS")), phys_req)
+
+# Add the nodes together for all the classes
+nodes <- full_join(math_node_list, cosc_node_list) %>%
+  full_join(., cis_node_list) %>%
+  full_join(., bsad_node_list) %>%
+  full_join(., dasc_node_list) %>%
+  full_join(., phys_node_list)
+
+# Add labels, colors
+nodes$label <- nodes$id
+nodes <- nodes %>%
+    mutate(color = case_when(grepl('MATH', label)  ~ 'darkblue',
+                             grepl('DASC', label)  ~ 'purple',
+                             grepl('COSC', label)  ~ 'lightblue',
+                             grepl('ACCT', label)  ~ 'orange',
+                             grepl('ECON', label)  ~ 'green',
+                             grepl('BSAD', label)  ~ 'darkgreen',
+                             grepl('PHYS', label)  ~ 'grey',
+                                TRUE ~ 'darkred'))
+
+
+
+visNetwork(nodes, edge_list) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visEdges(arrows = "middle")
+
+
+```
+
+
+
+5. Finally, show how you fit into this Network.  Make a node for yourself and link to all the courses in your major(s), including electives, along with all the nodes in #4 above.  Use of color, icons, etc. to tell your story visually is recommended.  (is the visNetwork tutorial under “options”.)
+
+```{r}
+# Adding myself as a node
+nodes <- full_join(node_list, tibble(id = c('TJ Liggett')))
+
+# Adding in the courses I have taken
+tj_courses <- cosc_req %>%
+  full_join(., dasc_req) %>%
+  full_join(., math_req) %>%
+  full_join(., tibble(id = c(
+    'COSC 397',
+    'MATH 340',
+    'MATH 345',
+    'BSAD 320'
+  )))
+
+# Create the edges for my courses
+edges <- edge_list %>%
+  full_join(., tibble(from = c('TJ Liggett'), to = tj_courses$id))
+
+nodes$label <- nodes$id
+
+# Add styling to nodes
+nodes <- nodes %>%
+    mutate(color = case_when(grepl('MATH', label)  ~ 'blue',
+                             grepl('DASC', label)  ~ 'purple',
+                             grepl('COSC', label)  ~ 'lightblue',
+                             grepl('ACCT', label)  ~ 'orange',
+                             grepl('ECON', label)  ~ 'green',
+                             grepl('BSAD', label)  ~ 'darkgreen',
+                             grepl('PHYS', label)  ~ 'grey',
+                             grepl('CIS', label)  ~ 'black',
+                                TRUE ~ 'darkred')) %>%
+  mutate(shape = case_when(str_length(label) < 5 ~ 'square',
+                           label == 'TJ Liggett' ~ 'triangle',
+                            TRUE ~ 'circle'))
+
+# I took out all of the "floating electives" that weren't either courses I had taken or major requirements
+nodes <- nodes %>%
+  filter(id %in% edges$to | id %in% edges$from )
+
+visNetwork(nodes, edges) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visEdges(arrows = "middle")
+```
+

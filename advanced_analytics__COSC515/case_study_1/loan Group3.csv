@@ -1,0 +1,11 @@
+Name,Checking_amount,Term,Credit_score,Gender,Marital_status,Car_loan,Personal_loan,Home_loan,Education_loan,Emp_status,Amount,Saving_amount,Emp_duration,Age,No_of_credit_acc
+Orville Hammond,475,10,748,Male,Single,0,0,0,0,employed,1945,3696,38,32,2
+Darnell Norton,-256,24,442,Male,Single,0,0,0,0,unemployed,474,4074,36,39,3
+Frances Drake,744,17,431,Female,Married,0,0,0,0,employed,1890,2749,97,35,2
+Luis Joseph,-509,18,976,Male,Married,1,1,0,0,unemployed,1686,2411,20,20,4
+Miranda Poole,401,26,786,Female,Single,1,1,0,0,unemployed,1553,2454,4,31,1
+Betsy Roberson,231,26,718,Female,Married,0,1,0,0,unemployed,764,2695,62,28,1
+Olive Jordan,-416,12,473,Female,Single,0,1,0,0,unemployed,1420,2473,54,24,1
+Rhonda Castillo,-11,27,649,Female,Single,1,0,0,1,unemployed,1365,3429,51,36,2
+Preston Mcguire,473,26,799,Male,Single,0,0,0,0,unemployed,1251,4031,8,40,1
+Oliver Campbell,-139,14,426,Male,Single,0,1,0,0,unemployed,549,2411,103,37,1

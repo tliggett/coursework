@@ -1,0 +1,114 @@
+---
+title: "Tidymodels"
+author: "T.J. Liggett"
+date: "2/26/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Tidymodels Tutorial
+
+```{r}
+library(tidymodels)  # for the parsnip package, along with the rest of tidymodels
+
+# Helper packages
+library(readr)       # for importing data
+library(vip)         # for variable importance plots
+
+# Helper packages
+library(readr)       # for importing data
+library(broom.mixed) # for converting bayesian models to tidy tibbles
+library(dotwhisker)  # for visualizing regression results
+```
+# A predictive modeling case study
+
+
+## The Hotel Bookings Data
+
+```{r}
+hotels <- 
+  read_csv('https://tidymodels.org/start/case-study/hotels.csv') %>%
+  mutate_if(is.character, as.factor) 
+
+dim(hotels)
+```
+```{r}
+glimpse(hotels)
+```
+```{r}
+hotels %>% 
+  count(children) %>% 
+  mutate(prop = n/sum(n))
+```
+We're gonna put 25% of the stays in the test set for now.
+```{r}
+set.seed(123)
+splits      <- initial_split(hotels, strata = children)
+
+hotel_other <- training(splits)
+hotel_test  <- testing(splits)
+
+hotel_other %>% 
+  count(children) %>% 
+  mutate(prop = n/sum(n))
+
+hotel_test  %>% 
+  count(children) %>% 
+  mutate(prop = n/sum(n))
+```
+
+
+Now that we have our testing data set, we need to split the remaining data into training and validation sets.
+
+```{r}
+set.seed(234)
+val_set <- validation_split(hotel_other, 
+                            strata = children, 
+                            prop = 0.80)
+val_set
+```
+
+## First Model: Penalized Logistic Regression
+
+```{r}
+lr_mod <- 
+  logistic_reg(penalty = tune(), mixture = 1) %>% 
+  set_engine("glmnet")
+```
+
+```{r}
+holidays <- c("AllSouls", "AshWednesday", "ChristmasEve", "Easter", 
+              "ChristmasDay", "GoodFriday", "NewYearsDay", "PalmSunday")
+
+lr_recipe <- 
+  recipe(children ~ ., data = hotel_other) %>% 
+  step_date(arrival_date) %>% 
+  step_holiday(arrival_date, holidays = holidays) %>% 
+  step_rm(arrival_date) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>% 
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors())
+```
+
+### Create the Workflow
+
+```{r}
+lr_workflow <- 
+  workflow() %>% 
+  add_model(lr_mod) %>% 
+  add_recipe(lr_recipe)
+```
+
+### Create the Grid for Tuning
+
+```{r}
+lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
+
+lr_reg_grid %>% top_n(-5) # lowest penalty values
+
+lr_reg_grid %>% top_n(5)  # highest penalty values
+```
+

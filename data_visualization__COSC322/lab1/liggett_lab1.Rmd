@@ -1,0 +1,100 @@
+---
+title: "COSC 322 Lab 1"
+author: "T.J. Liggett"
+date: "2/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width=6, fig.height=4, echo = TRUE)
+library(tidyverse)
+```
+
+### 1) Using the mpg dataset, make a scatterplot of hwy versus cyl.
+
+```{r 1, fig.width = 4, fig.height = 2.67}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = cyl, y = hwy))
+```
+
+### 2) From the aesthetics section and the mpg dataset, map a continuous variable (cty) to color, size, and shape (one plot each). How do these aesthetics behave differently for categorical vs. continuous variables?
+
+For a categorical variable, the color aesthetic assigns a distinct color to each categorical value. For continuous variables, a color spectrum sorts the continuous variable. 
+
+```{r 2-color}
+# Continuous example (cty)
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = cty))
+```
+
+The size aesthetic assigns a distinct point size to each unique value of a categorical variable. A warning pops up that says "using size for a discrete variable is not advised." For a continuous variable, values are thrown into buckets (i.e. 10, 15, 20, ...) assigned to a certain size.
+
+```{r 2-size}
+# Continuous example (cty)
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, size = cty))
+```
+
+The shape aesthetic assigns a unique shape to each unique value of a categorical variable, but when confronted with a continuous variable it throws an error: "A continuous variable can not be mapped to shape." This is probably because a continuous variable cannot be mapped to a shape using geom_point.
+
+To fix this issue, I put the cty variable into bins and created a categorical variable ctybins, then plotted using this. I used six bins as that was the default maximum shapes.
+
+```{r}
+mpg$ctybins <- cut(mpg$cty, c(5, 10, 15, 20, 25, 30, 35))
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, shape = ctybins))
+```
+
+
+
+### 3) Take the first faceted plot in the section on Facets and answer the questions that follow:
+
+```{r 3, fig.width = 6, fig.height = 4}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+```
+
+### What are the advantages to using faceting instead of the color aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?
+
+With faceting, it is easier to see the shape/distribution of each specific category. However, I think it becomes more difficult to see differences in the values between categories. With an aesthetic like color, it is easier to compare values of the categories as they are right next to each other. With a larger dataset, it will likely get more difficult to view the data with too many points on one plot. 
+
+### 4) From the Geometric Objects section:  question #6, “Recreate the R code…”
+
+```{r 4}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_smooth(se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_smooth(mapping = aes(group = drv), se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point() +
+  geom_smooth(se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point(mapping = aes(color = drv)) +
+  geom_smooth(se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point(mapping = aes(color = drv)) +
+  geom_smooth(mapping = aes(linetype = drv), se = FALSE)
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point()
+```
+
+### 5)  From the Position Adjustments section, question #1: What is the problem with this plot? How could you improve it?
+
+The plot has the problem of **overplotting**, where points are overlapping. To fix this, a jitter should be applied to ensure no two points are exactly the same.
+
+```{r 5}
+# the plot in question
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_point()
+# The "fixed" plot
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + 
+  geom_jitter()
+```
